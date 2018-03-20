@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MeetUp</string>
+    <string name="bottom_nav_title_events">Events</string>
+    <string name="bottom_nav_title_map">Map</string>
+    <string name="bottom_nav_title_chats">Chats</string>
+    <string name="bottom_nav_title_notifications">Notifications</string>
+</resources>
