@@ -1,5 +1,6 @@
 package com.mobileappdev.teamone.meetup;
 
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -13,13 +14,18 @@ import android.widget.TextView;
 
 import com.mobileappdev.teamone.meetup.dummy.DummyContent;
 
-public class MainActivity extends AppCompatActivity implements EventsListFragment.OnListFragmentInteractionListener, ChatsListFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity
+        implements
+        EventsListFragment.OnListFragmentInteractionListener,
+        ChatsListFragment.OnListFragmentInteractionListener,
+        MapFragment.OnFragmentInteractionListener {
 
     private TextView mTextMessage;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private EventsListFragment eventsListFragment;
     private ChatsListFragment chatsListFragment;
+    private MapFragment mapFragment;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -34,7 +40,9 @@ public class MainActivity extends AppCompatActivity implements EventsListFragmen
                     fragmentTransaction.commit();
                     return true;
                 case R.id.navigation_map:
-
+                    fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.fragmentWindow, mapFragment);
+                    fragmentTransaction.commit();
                     return true;
                 case R.id.navigation_chats:
                     fragmentTransaction = fragmentManager.beginTransaction();
@@ -55,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements EventsListFragmen
 
         eventsListFragment = new EventsListFragment();
         chatsListFragment = new ChatsListFragment();
+        mapFragment = new MapFragment();
 
         fragmentManager = getSupportFragmentManager();
 
@@ -71,6 +80,11 @@ public class MainActivity extends AppCompatActivity implements EventsListFragmen
 
     @Override
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
-        int i = 1 + 1;
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
