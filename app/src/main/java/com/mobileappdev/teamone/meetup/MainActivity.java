@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity
     private EventsListFragment eventsListFragment;
     private ChatsListFragment chatsListFragment;
     private MapFragment mapFragment;
+    private com.google.android.gms.maps.SupportMapFragment mMapFragment;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -40,8 +41,12 @@ public class MainActivity extends AppCompatActivity
                     fragmentTransaction.commit();
                     return true;
                 case R.id.navigation_map:
-                    fragmentTransaction = fragmentManager.beginTransaction();
+                    /*fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.replace(R.id.fragmentWindow, mapFragment);
+                    fragmentTransaction.commit();*/
+                    mMapFragment = com.google.android.gms.maps.SupportMapFragment.newInstance();
+                    fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.add(R.id.fragmentWindow, mMapFragment);
                     fragmentTransaction.commit();
                     return true;
                 case R.id.navigation_chats:

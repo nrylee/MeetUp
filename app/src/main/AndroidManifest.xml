@@ -21,6 +21,10 @@
         <activity android:name=".EventsActivity"></activity>
 
 
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCKIqc6nOI3CrHc6UvYgqiNCozmvsp-m7Q"/>
     </application>
 
 </manifest>
