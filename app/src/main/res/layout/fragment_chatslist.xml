@@ -11,29 +11,31 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.mobileappdev.teamone.meetup.ChatsListFragment">
 
-    <android.support.design.widget.FloatingActionButton
+    <Button
+        android:id="@+id/sendButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:id="@+id/fab"
-        android:tint="@android:color/white"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        app:fabSize="mini" />
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/send"
+        android:tint="@android:color/white" />
 
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/fab"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/sendButton">
 
         <EditText
+            android:id="@+id/input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Input"
-            android:id="@+id/input"
-            />
+            android:hint="@string/input"
+            android:inputType="" />
     </android.support.design.widget.TextInputLayout>
 
     <ListView
@@ -41,9 +43,12 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@id/fab"
+        android:layout_above="@id/sendButton"
         android:dividerHeight="16dp"
         android:divider="@android:color/transparent"
         android:id="@+id/list_of_messages"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp">
+
+
+    </ListView>
 </RelativeLayout>
