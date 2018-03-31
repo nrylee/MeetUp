@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,7 +34,7 @@ import java.io.Console;
  * Use the {@link MapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends android.support.v4.app.Fragment implements OnMapReadyCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -76,19 +77,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        initializeMap();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        /*SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);*/
-
         return inflater.inflate(R.layout.fragment_map, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        this.initializeMap();
     }
 
     @Override
@@ -110,7 +111,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void initializeMap() {
         if (mMap == null) {
-            SupportMapFragment mapFrag = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+            SupportMapFragment mapFrag = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.google_map_fragment);
             mapFrag.getMapAsync(this);
         }
     }
@@ -119,15 +120,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         PolylineOptions lineOptions = new PolylineOptions();
-        LatLng a = new LatLng(-84.556, 34.112);
-        LatLng b = new LatLng(-84.576, 34.192);
+        LatLng b = new LatLng(34.192, -84.576);
+        LatLng a = new LatLng(34.112, -84.556);
 
         lineOptions.add(a);
         lineOptions.add(b);
         lineOptions.color(R.color.colorAccent);
         Polyline line = mMap.addPolyline(lineOptions);
 
-        LatLngBounds bounds = new LatLngBounds(a, b);
+        LatLngBounds bounds = new LatLngBounds(a,b);
         mMap.setLatLngBoundsForCameraTarget(bounds);
     }
 
