@@ -20,7 +20,9 @@ public class MainActivity extends AppCompatActivity
         implements
         EventsListFragment.OnListFragmentInteractionListener,
         ChatListFragment.OnFragmentInteractionListener,
-        MapFragment.OnFragmentInteractionListener {
+        MapFragment.OnFragmentInteractionListener,
+        ChatFragment.OnFragmentInteractionListener
+{
 
     private TextView mTextMessage;
     private FragmentManager fragmentManager;
@@ -94,7 +96,7 @@ public class MainActivity extends AppCompatActivity
         ChatFragment chatFragment = ChatFragment.newInstance(item.getId());
 
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragmentWindow, chatFragment);
+        fragmentTransaction.replace(R.id.fragmentWindow, chatFragment);
         fragmentTransaction.commit();
     }
 }
