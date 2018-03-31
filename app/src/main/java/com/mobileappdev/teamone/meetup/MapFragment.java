@@ -1,6 +1,11 @@
 package com.mobileappdev.teamone.meetup;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -12,18 +17,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.mobileappdev.teamone.meetup.MapModels.MapContent;
+import com.mobileappdev.teamone.meetup.MapModels.MapEventAttendee;
+import com.mobileappdev.teamone.meetup.MapModels.MapEventItem;
 
 import java.io.Console;
+import java.util.List;
+import java.util.Random;
 
 
 /**
@@ -116,20 +131,52 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
         }
     }
 
+    private void populateMap(List<MapEventItem> eventItems) {
+        if(mMap != null) {
+            for (MapEventItem eventItem : eventItems) {
+                CircleOptions eventCircleOptions = new CircleOptions();
+                eventCircleOptions.strokeColor(0xFF000000);
+                eventCircleOptions.center(eventItem.getCenter());
+                eventCircleOptions.radius(eventItem.getRadius());
+                eventCircleOptions.fillColor(eventItem.getColor());
+                eventCircleOptions.visible(true);
+                mMap.addCircle(eventCircleOptions);
+
+                for (MapEventAttendee attendee : eventItem.getEventAttendeeList()) {
+                    MarkerOptions personMarker = new MarkerOptions();
+                    personMarker.position(attendee.getCenter());
+                    personMarker.visible(true);
+                    personMarker.icon(getBitmapDescriptor(R.drawable.ic_dot_green_24dp));
+                    mMap.addMarker(personMarker);
+                }
+            }
+        }
+    }
+
+    private com.google.android.gms.maps.model.BitmapDescriptor getBitmapDescriptor(int id) {
+        Drawable vectorDrawable = this.getContext().getDrawable(id);
+        int h = vectorDrawable.getIntrinsicHeight();
+        int w = vectorDrawable.getIntrinsicWidth();
+        vectorDrawable.setBounds(0, 0, w, h);
+        Bitmap bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bm);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bm);
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        PolylineOptions lineOptions = new PolylineOptions();
-        LatLng b = new LatLng(34.192, -84.576);
-        LatLng a = new LatLng(34.112, -84.556);
 
-        lineOptions.add(a);
-        lineOptions.add(b);
-        lineOptions.color(R.color.colorAccent);
-        Polyline line = mMap.addPolyline(lineOptions);
+        populateMap(MapContent.getMapEvents());
 
-        LatLngBounds bounds = new LatLngBounds(a,b);
-        mMap.setLatLngBoundsForCameraTarget(bounds);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(
+                        MapContent.LAT_START,
+                        MapContent.LNG_START
+                ),
+                8.0f
+        ));
     }
 
     /**
