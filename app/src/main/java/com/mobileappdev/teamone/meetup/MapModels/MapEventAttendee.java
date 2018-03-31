@@ -13,6 +13,10 @@ public class MapEventAttendee {
         this.center = new LatLng(lat, lng);
     }
 
+    public String getName() {
+        return attendeeName;
+    }
+
     public LatLng getCenter() {
         return center;
     }

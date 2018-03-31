@@ -42,7 +42,7 @@ public class MapEventItem {
     public List<MapEventAttendee> getEventAttendeeList() {
         return eventAttendeeList;
     }
-
+    
     public int getColor() {
         Random r = new Random();
         int i = 0x55000000;

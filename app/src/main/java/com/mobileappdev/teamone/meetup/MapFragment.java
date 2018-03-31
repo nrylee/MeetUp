@@ -1,5 +1,6 @@
 package com.mobileappdev.teamone.meetup;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,12 +24,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -142,12 +145,34 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
                 eventCircleOptions.visible(true);
                 mMap.addCircle(eventCircleOptions);
 
-                for (MapEventAttendee attendee : eventItem.getEventAttendeeList()) {
+                for (final MapEventAttendee attendee : eventItem.getEventAttendeeList()) {
                     MarkerOptions personMarker = new MarkerOptions();
                     personMarker.position(attendee.getCenter());
                     personMarker.visible(true);
-                    personMarker.icon(getBitmapDescriptor(R.drawable.ic_dot_green_24dp));
-                    mMap.addMarker(personMarker);
+                    BitmapDescriptor bitmapDescriptor = getBitmapDescriptor(R.drawable.ic_dot_green_12dp);
+                    personMarker.icon(bitmapDescriptor);
+                    Marker marker = mMap.addMarker(personMarker);
+                    marker.setTitle(attendee.getName());
+
+                    mMap.setOnMarkerClickListener(
+                        new GoogleMap.OnMarkerClickListener() {
+                            @Override
+                            public boolean onMarkerClick(Marker m) {
+                                m.showInfoWindow();
+                                return true;
+                            }
+                        }
+                    );
+
+                    mMap.setOnInfoWindowClickListener(
+                        new GoogleMap.OnInfoWindowClickListener() {
+                            @Override
+                            public void onInfoWindowClick(Marker m) {
+                                //android.support.v7.app.AlertDialog.Builder alertDialog;
+                                //(alertDialog = android.support.v7.app.AlertDialog.Builder) instanceof  ? (() (alertDialog = android.support.v7.app.AlertDialog.Builder)) : null;;
+                            }
+                        }
+                    );
                 }
             }
         }

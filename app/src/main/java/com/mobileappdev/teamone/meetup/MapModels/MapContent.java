@@ -16,15 +16,15 @@ public class MapContent {
 
         Integer totalEvents = r.nextInt(10) + 5;
         for (int i = 0; i < totalEvents; i++) {
-            double eventCenterLat = LAT_START + ((r.nextDouble() * 0.5) - 0.05);
-            double eventCenterLng = LNG_START + ((r.nextDouble() * 0.5) - 0.05);
+            double eventCenterLat = LAT_START + ((r.nextDouble() * 0.5) - 0.25);
+            double eventCenterLng = LNG_START + ((r.nextDouble() * 0.5) - 0.25);
 
             MapEventItem mapEventItem = new MapEventItem(
                     i,
                     "Event ID " + i,
                     eventCenterLat,
                     eventCenterLng,
-                    r.nextInt(100)
+                    r.nextInt(100) + 100
             );
             _list.add(mapEventItem);
 
