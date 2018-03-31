@@ -9,24 +9,25 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.mobileappdev.teamone.meetup.dummy.DummyContent;
 
 public class MainActivity extends AppCompatActivity
         implements
         EventsListFragment.OnListFragmentInteractionListener,
-        ChatsListFragment.OnListFragmentInteractionListener,
+        ChatListFragment.OnFragmentInteractionListener,
         MapFragment.OnFragmentInteractionListener {
 
     private TextView mTextMessage;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private EventsListFragment eventsListFragment;
-    private ChatsListFragment chatsListFragment;
+    private ChatListFragment chatListFragment;
     private MapFragment mapFragment;
-    private com.google.android.gms.maps.SupportMapFragment mMapFragment;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -41,17 +42,13 @@ public class MainActivity extends AppCompatActivity
                     fragmentTransaction.commit();
                     return true;
                 case R.id.navigation_map:
-                    /*fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.fragmentWindow, mapFragment);
-                    fragmentTransaction.commit();*/
-                    mMapFragment = com.google.android.gms.maps.SupportMapFragment.newInstance();
                     fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.add(R.id.fragmentWindow, mMapFragment);
+                    fragmentTransaction.replace(R.id.fragmentWindow, mapFragment);
                     fragmentTransaction.commit();
                     return true;
                 case R.id.navigation_chats:
                     fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.fragmentWindow, chatsListFragment);
+                    fragmentTransaction.replace(R.id.fragmentWindow, chatListFragment);
                     fragmentTransaction.commit();
                     return true;
                 case R.id.navigation_notifications:
@@ -65,9 +62,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Log.i("TESTING", "App onCreate()");
         eventsListFragment = new EventsListFragment();
-        chatsListFragment = new ChatsListFragment();
+        //chatsListFragment = new ChatsListFragment();
         mapFragment = new MapFragment();
 
         fragmentManager = getSupportFragmentManager();
