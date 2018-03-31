@@ -25,11 +25,23 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        holder.mItem = mValues.get(position);
         holder.mTitle.setText(mValues.get(position).getTitle());
         holder.mSubTitle.setText(mValues.get(position).getSubtitle());
         holder.mStatus.setText(mValues.get(position).getStatus());
         holder.mSubStatus.setText(mValues.get(position).getSubStatus());
+
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null != mListener) {
+                    // Notify the active callbacks interface (the activity, if the
+                    // fragment is attached to one) that an item has been selected.
+                    mListener.onFragmentInteraction(holder.mItem);
+                }
+            }
+        });
     }
 
     @Override

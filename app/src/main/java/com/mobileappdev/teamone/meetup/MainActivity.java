@@ -62,10 +62,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.i("TESTING", "App onCreate()");
         eventsListFragment = new EventsListFragment();
-        //chatsListFragment = new ChatsListFragment();
         mapFragment = new MapFragment();
+        chatListFragment = new ChatListFragment();
 
         fragmentManager = getSupportFragmentManager();
 
@@ -88,5 +87,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onFragmentInteraction(ChatListItem item) {
+        ChatFragment chatFragment = ChatFragment.newInstance(item.getId());
+
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.fragmentWindow, chatFragment);
+        fragmentTransaction.commit();
     }
 }
