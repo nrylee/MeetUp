@@ -1,6 +1,7 @@
 package com.mobileappdev.teamone.meetup;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,6 +22,8 @@ import java.util.List;
  * <p/>
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
+ * Activities containing this fragment MUST implement the {@link OnCreateEventFragmentInteractionListener}
+ * interface.
  */
 public class EventsListFragment extends Fragment {
 
@@ -29,6 +32,8 @@ public class EventsListFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private OnCreateEventFragmentInteractionListener mCreateEventListener;
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -71,6 +76,18 @@ public class EventsListFragment extends Fragment {
                 )
         );
 
+        View addEventButton = view.findViewById(R.id.floating_create_event);
+        addEventButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(null != mCreateEventListener) {
+                            mCreateEventListener.onCreateEventFragmentInteraction();
+                        }
+                    }
+                }
+        );
+
         return view;
     }
 
@@ -84,12 +101,20 @@ public class EventsListFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }
+
+        if (context instanceof OnCreateEventFragmentInteractionListener) {
+            mCreateEventListener = (OnCreateEventFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnCreateEventFragmentInteractionListener");
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        mCreateEventListener = null;
     }
 
     /**
@@ -105,5 +130,10 @@ public class EventsListFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(EventListItem item);
+    }
+
+    public interface OnCreateEventFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onCreateEventFragmentInteraction();
     }
 }

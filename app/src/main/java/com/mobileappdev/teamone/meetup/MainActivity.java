@@ -22,7 +22,11 @@ public class MainActivity extends AppCompatActivity
         EventsListFragment.OnListFragmentInteractionListener,
         ChatListFragment.OnFragmentInteractionListener,
         MapFragment.OnFragmentInteractionListener,
-        ChatFragment.OnFragmentInteractionListener
+        ChatFragment.OnFragmentInteractionListener,
+        EventsListFragment.OnCreateEventFragmentInteractionListener,
+        CreateEventFragment.OnFragmentInteractionListener,
+        EventDetailFragment.OnEditEventInteractionListener,
+        EditEventFragment.OnFragmentInteractionListener
 {
 
     private TextView mTextMessage;
@@ -84,7 +88,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(EventListItem item) {
+        EventDetailFragment eventDetailFragment = new EventDetailFragment();
 
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentWindow, eventDetailFragment);
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -98,6 +106,24 @@ public class MainActivity extends AppCompatActivity
 
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragmentWindow, chatFragment);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onCreateEventFragmentInteraction() {
+        CreateEventFragment createEventFragment = new CreateEventFragment();
+
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentWindow, createEventFragment);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onEditEventInteractionListener(Integer id) {
+        EditEventFragment editEventFragment = new EditEventFragment();
+
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentWindow, editEventFragment);
         fragmentTransaction.commit();
     }
 }
