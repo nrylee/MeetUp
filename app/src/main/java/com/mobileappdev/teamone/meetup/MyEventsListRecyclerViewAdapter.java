@@ -6,9 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.mobileappdev.teamone.meetup.EventModels.EventListContent;
+import com.mobileappdev.teamone.meetup.EventModels.EventListItem;
 import com.mobileappdev.teamone.meetup.EventsListFragment.OnListFragmentInteractionListener;
 import com.mobileappdev.teamone.meetup.dummy.DummyContent.DummyItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,11 +21,11 @@ import java.util.List;
  */
 public class MyEventsListRecyclerViewAdapter extends RecyclerView.Adapter<MyEventsListRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<EventListItem> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyEventsListRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
+    public MyEventsListRecyclerViewAdapter(/*List<EventListItem> items, */OnListFragmentInteractionListener listener) {
+        mValues = EventListContent.getList();
         mListener = listener;
     }
 
@@ -36,8 +39,8 @@ public class MyEventsListRecyclerViewAdapter extends RecyclerView.Adapter<MyEven
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        //holder.mIdView.setText(mValues.get(position).id);
+        holder.mEventNameView.setText(mValues.get(position).getEventName());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,20 +61,20 @@ public class MyEventsListRecyclerViewAdapter extends RecyclerView.Adapter<MyEven
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+        //public final TextView mIdView;
+        public final TextView mEventNameView;
+        public EventListItem mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            //mIdView = (TextView) view.findViewById(R.id.id);
+            mEventNameView = (TextView) view.findViewById(R.id.text_view_event_name);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + /*mContentView.getText()*/"not implemented" + "'";
         }
     }
 }

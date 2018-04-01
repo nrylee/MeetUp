@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mobileappdev.teamone.meetup.EventModels.EventListItem;
 import com.mobileappdev.teamone.meetup.dummy.DummyContent;
 import com.mobileappdev.teamone.meetup.dummy.DummyContent.DummyItem;
 
@@ -60,17 +61,16 @@ public class EventsListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_eventslist_list, container, false);
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MyEventsListRecyclerViewAdapter(DummyContent.ITEMS, mListener));
-        }
+        RecyclerView eventListRecycler = view.findViewById(R.id.eventListRecyclerView);
+        eventListRecycler.setAdapter(new MyEventsListRecyclerViewAdapter(mListener));
+        eventListRecycler.setLayoutManager(
+                new LinearLayoutManager(
+                        eventListRecycler.getContext(),
+                        LinearLayoutManager.VERTICAL,
+                        false
+                )
+        );
+
         return view;
     }
 
@@ -104,6 +104,6 @@ public class EventsListFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(EventListItem item);
     }
 }

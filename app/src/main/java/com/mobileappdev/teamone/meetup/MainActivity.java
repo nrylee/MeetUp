@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.mobileappdev.teamone.meetup.EventModels.EventListItem;
 import com.mobileappdev.teamone.meetup.dummy.DummyContent;
 
 public class MainActivity extends AppCompatActivity
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+    public void onListFragmentInteraction(EventListItem item) {
 
     }
 
