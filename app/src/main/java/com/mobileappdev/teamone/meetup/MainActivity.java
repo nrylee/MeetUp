@@ -15,18 +15,19 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.mobileappdev.teamone.meetup.EventModels.EventListItem;
+import com.mobileappdev.teamone.meetup.FragmentListeners.OnViewEventDetailListener;
 import com.mobileappdev.teamone.meetup.dummy.DummyContent;
 
 public class MainActivity extends AppCompatActivity
         implements
-        EventsListFragment.OnListFragmentInteractionListener,
         ChatListFragment.OnFragmentInteractionListener,
         MapFragment.OnFragmentInteractionListener,
         ChatFragment.OnFragmentInteractionListener,
         EventsListFragment.OnCreateEventFragmentInteractionListener,
         CreateEventFragment.OnFragmentInteractionListener,
         EventDetailFragment.OnEditEventInteractionListener,
-        EditEventFragment.OnFragmentInteractionListener
+        EditEventFragment.OnFragmentInteractionListener,
+        OnViewEventDetailListener
 {
 
     private TextView mTextMessage;
@@ -87,15 +88,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(EventListItem item) {
-        EventDetailFragment eventDetailFragment = new EventDetailFragment();
-
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragmentWindow, eventDetailFragment);
-        fragmentTransaction.commit();
-    }
-
-    @Override
     public void onFragmentInteraction(Uri uri) {
 
     }
@@ -119,11 +111,20 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onEditEventInteractionListener(Integer id) {
+    public void onEditEventInteractionListener(Integer eventId) {
         EditEventFragment editEventFragment = new EditEventFragment();
 
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragmentWindow, editEventFragment);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onViewEventDetailInteraction(Integer eventId) {
+        EventDetailFragment eventDetailFragment = new EventDetailFragment();
+
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentWindow, eventDetailFragment);
         fragmentTransaction.commit();
     }
 }

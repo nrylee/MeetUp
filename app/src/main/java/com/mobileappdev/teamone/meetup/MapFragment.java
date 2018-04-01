@@ -35,6 +35,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.mobileappdev.teamone.meetup.EventModels.EventListItem;
+import com.mobileappdev.teamone.meetup.FragmentListeners.OnViewEventDetailListener;
 import com.mobileappdev.teamone.meetup.MapModels.MapContent;
 import com.mobileappdev.teamone.meetup.MapModels.MapEventAttendee;
 import com.mobileappdev.teamone.meetup.MapModels.MapEventItem;
@@ -64,6 +66,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private OnViewEventDetailListener mViewEventListener;
 
     public MapFragment() {
         // Required empty public constructor
@@ -119,6 +122,13 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
+        if (context instanceof OnViewEventDetailListener) {
+            mViewEventListener = (OnViewEventDetailListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -145,6 +155,13 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
                 eventCircleOptions.visible(true);
                 mMap.addCircle(eventCircleOptions);
 
+                MarkerOptions eventMarkerOptions = new MarkerOptions();
+                eventMarkerOptions.position(eventItem.getCenter());
+                eventMarkerOptions.visible(true);
+                Marker eventMarker = mMap.addMarker(eventMarkerOptions);
+                eventMarker.setTag(eventItem);
+                eventMarker.setTitle(eventItem.getEventName());
+
                 for (final MapEventAttendee attendee : eventItem.getEventAttendeeList()) {
                     MarkerOptions personMarker = new MarkerOptions();
                     personMarker.position(attendee.getCenter());
@@ -168,6 +185,13 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
                         new GoogleMap.OnInfoWindowClickListener() {
                             @Override
                             public void onInfoWindowClick(Marker m) {
+                                if (null != m.getTag()) {
+                                    if(m.getTag().getClass() == MapEventItem.class) {
+                                        mViewEventListener.onViewEventDetailInteraction(
+                                                ((MapEventItem)m.getTag()).getEventId()
+                                        );
+                                    }
+                                }
                                 //android.support.v7.app.AlertDialog.Builder alertDialog;
                                 //(alertDialog = android.support.v7.app.AlertDialog.Builder) instanceof  ? (() (alertDialog = android.support.v7.app.AlertDialog.Builder)) : null;;
                             }

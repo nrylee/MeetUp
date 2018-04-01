@@ -39,6 +39,10 @@ public class MapEventItem {
         return radius;
     }
 
+    public String getEventName() {
+        return eventName;
+    }
+
     public List<MapEventAttendee> getEventAttendeeList() {
         return eventAttendeeList;
     }

@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.mobileappdev.teamone.meetup.EventModels.EventListContent;
 import com.mobileappdev.teamone.meetup.EventModels.EventListItem;
-import com.mobileappdev.teamone.meetup.EventsListFragment.OnListFragmentInteractionListener;
+import com.mobileappdev.teamone.meetup.FragmentListeners.OnViewEventDetailListener;
 import com.mobileappdev.teamone.meetup.dummy.DummyContent.DummyItem;
 
 import java.util.ArrayList;
@@ -16,15 +16,15 @@ import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * specified {@link OnViewEventDetailListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyEventsListRecyclerViewAdapter extends RecyclerView.Adapter<MyEventsListRecyclerViewAdapter.ViewHolder> {
 
     private final List<EventListItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final OnViewEventDetailListener mListener;
 
-    public MyEventsListRecyclerViewAdapter(/*List<EventListItem> items, */OnListFragmentInteractionListener listener) {
+    public MyEventsListRecyclerViewAdapter(/*List<EventListItem> items, */OnViewEventDetailListener listener) {
         mValues = EventListContent.getList();
         mListener = listener;
     }
@@ -48,7 +48,7 @@ public class MyEventsListRecyclerViewAdapter extends RecyclerView.Adapter<MyEven
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onViewEventDetailInteraction(holder.mItem.getEventId());
                 }
             }
         });
