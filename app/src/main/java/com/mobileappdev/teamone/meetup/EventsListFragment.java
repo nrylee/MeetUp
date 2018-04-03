@@ -1,7 +1,6 @@
 package com.mobileappdev.teamone.meetup;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,8 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mobileappdev.teamone.meetup.EventModels.EventListItem;
-import com.mobileappdev.teamone.meetup.FragmentListeners.OnViewEventDetailListener;
 import com.mobileappdev.teamone.meetup.dummy.DummyContent;
 import com.mobileappdev.teamone.meetup.dummy.DummyContent.DummyItem;
 
@@ -21,9 +18,7 @@ import java.util.List;
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnViewEventDetailListener}
- * interface.
- * Activities containing this fragment MUST implement the {@link OnCreateEventFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
 public class EventsListFragment extends Fragment {
@@ -32,9 +27,7 @@ public class EventsListFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-    private OnViewEventDetailListener mViewEventListener;
-    private OnCreateEventFragmentInteractionListener mCreateEventListener;
-
+    private OnListFragmentInteractionListener mListener;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -67,28 +60,17 @@ public class EventsListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_eventslist_list, container, false);
 
-        RecyclerView eventListRecycler = view.findViewById(R.id.eventListRecyclerView);
-        eventListRecycler.setAdapter(new MyEventsListRecyclerViewAdapter(mViewEventListener));
-        eventListRecycler.setLayoutManager(
-                new LinearLayoutManager(
-                        eventListRecycler.getContext(),
-                        LinearLayoutManager.VERTICAL,
-                        false
-                )
-        );
-
-        View addEventButton = view.findViewById(R.id.floating_create_event);
-        addEventButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(null != mCreateEventListener) {
-                            mCreateEventListener.onCreateEventFragmentInteraction();
-                        }
-                    }
-                }
-        );
-
+        // Set the adapter
+        if (view instanceof RecyclerView) {
+            Context context = view.getContext();
+            RecyclerView recyclerView = (RecyclerView) view;
+            if (mColumnCount <= 1) {
+                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            } else {
+                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+            }
+            recyclerView.setAdapter(new MyEventsListRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+        }
         return view;
     }
 
@@ -96,30 +78,32 @@ public class EventsListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnCreateEventFragmentInteractionListener) {
-            mCreateEventListener = (OnCreateEventFragmentInteractionListener) context;
+        if (context instanceof OnListFragmentInteractionListener) {
+            mListener = (OnListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnCreateEventFragmentInteractionListener");
-        }
-
-        if (context instanceof OnViewEventDetailListener) {
-            mViewEventListener = (OnViewEventDetailListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnViewEventDetailListener");
+                    + " must implement OnListFragmentInteractionListener");
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mViewEventListener = null;
-        mCreateEventListener = null;
+        mListener = null;
     }
 
-    public interface OnCreateEventFragmentInteractionListener {
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onCreateEventFragmentInteraction();
+        void onListFragmentInteraction(DummyItem item);
     }
 }

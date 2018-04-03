@@ -1,16 +1,9 @@
 package com.mobileappdev.teamone.meetup;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,32 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.mobileappdev.teamone.meetup.EventModels.EventListItem;
-import com.mobileappdev.teamone.meetup.FragmentListeners.OnViewEventDetailListener;
-import com.mobileappdev.teamone.meetup.MapModels.MapContent;
-import com.mobileappdev.teamone.meetup.MapModels.MapEventAttendee;
-import com.mobileappdev.teamone.meetup.MapModels.MapEventItem;
 
 import java.io.Console;
-import java.util.List;
-import java.util.Random;
 
 
 /**
@@ -54,7 +33,7 @@ import java.util.Random;
  * Use the {@link MapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapFragment extends android.support.v4.app.Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -66,7 +45,6 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private OnViewEventDetailListener mViewEventListener;
 
     public MapFragment() {
         // Required empty public constructor
@@ -98,19 +76,19 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        initializeMap();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map, container, false);
-    }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        this.initializeMap();
+        /*SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);*/
+
+        return inflater.inflate(R.layout.fragment_map, container, false);
     }
 
     @Override
@@ -118,13 +96,6 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-
-        if (context instanceof OnViewEventDetailListener) {
-            mViewEventListener = (OnViewEventDetailListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -139,93 +110,25 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
 
     private void initializeMap() {
         if (mMap == null) {
-            SupportMapFragment mapFrag = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.google_map_fragment);
+            SupportMapFragment mapFrag = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
             mapFrag.getMapAsync(this);
         }
-    }
-
-    private void populateMap(List<MapEventItem> eventItems) {
-        if(mMap != null) {
-            for (MapEventItem eventItem : eventItems) {
-                CircleOptions eventCircleOptions = new CircleOptions();
-                eventCircleOptions.strokeColor(0xFF000000);
-                eventCircleOptions.center(eventItem.getCenter());
-                eventCircleOptions.radius(eventItem.getRadius());
-                eventCircleOptions.fillColor(eventItem.getColor());
-                eventCircleOptions.visible(true);
-                mMap.addCircle(eventCircleOptions);
-
-                MarkerOptions eventMarkerOptions = new MarkerOptions();
-                eventMarkerOptions.position(eventItem.getCenter());
-                eventMarkerOptions.visible(true);
-                Marker eventMarker = mMap.addMarker(eventMarkerOptions);
-                eventMarker.setTag(eventItem);
-                eventMarker.setTitle(eventItem.getEventName());
-
-                for (final MapEventAttendee attendee : eventItem.getEventAttendeeList()) {
-                    MarkerOptions personMarker = new MarkerOptions();
-                    personMarker.position(attendee.getCenter());
-                    personMarker.visible(true);
-                    BitmapDescriptor bitmapDescriptor = getBitmapDescriptor(R.drawable.ic_dot_green_12dp);
-                    personMarker.icon(bitmapDescriptor);
-                    Marker marker = mMap.addMarker(personMarker);
-                    marker.setTitle(attendee.getName());
-
-                    mMap.setOnMarkerClickListener(
-                        new GoogleMap.OnMarkerClickListener() {
-                            @Override
-                            public boolean onMarkerClick(Marker m) {
-                                m.showInfoWindow();
-                                return true;
-                            }
-                        }
-                    );
-
-                    mMap.setOnInfoWindowClickListener(
-                        new GoogleMap.OnInfoWindowClickListener() {
-                            @Override
-                            public void onInfoWindowClick(Marker m) {
-                                if (null != m.getTag()) {
-                                    if(m.getTag().getClass() == MapEventItem.class) {
-                                        mViewEventListener.onViewEventDetailInteraction(
-                                                ((MapEventItem)m.getTag()).getEventId()
-                                        );
-                                    }
-                                }
-                                //android.support.v7.app.AlertDialog.Builder alertDialog;
-                                //(alertDialog = android.support.v7.app.AlertDialog.Builder) instanceof  ? (() (alertDialog = android.support.v7.app.AlertDialog.Builder)) : null;;
-                            }
-                        }
-                    );
-                }
-            }
-        }
-    }
-
-    private com.google.android.gms.maps.model.BitmapDescriptor getBitmapDescriptor(int id) {
-        Drawable vectorDrawable = this.getContext().getDrawable(id);
-        int h = vectorDrawable.getIntrinsicHeight();
-        int w = vectorDrawable.getIntrinsicWidth();
-        vectorDrawable.setBounds(0, 0, w, h);
-        Bitmap bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bm);
-        vectorDrawable.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bm);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        PolylineOptions lineOptions = new PolylineOptions();
+        LatLng a = new LatLng(-84.556, 34.112);
+        LatLng b = new LatLng(-84.576, 34.192);
 
-        populateMap(MapContent.getMapEvents());
+        lineOptions.add(a);
+        lineOptions.add(b);
+        lineOptions.color(R.color.colorAccent);
+        Polyline line = mMap.addPolyline(lineOptions);
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(
-                        MapContent.LAT_START,
-                        MapContent.LNG_START
-                ),
-                8.0f
-        ));
+        LatLngBounds bounds = new LatLngBounds(a, b);
+        mMap.setLatLngBoundsForCameraTarget(bounds);
     }
 
     /**
