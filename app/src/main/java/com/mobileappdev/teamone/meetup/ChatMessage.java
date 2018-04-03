@@ -1,19 +1,22 @@
 package com.mobileappdev.teamone.meetup;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ChatMessage {
+public class ChatMessage implements MessageItem {
 
     private String messageText;
     private String messageUser;
-    private long messageTime;
+    private Date messageTime;
 
-    public ChatMessage(String messageText, String messageUser) {
+    public ChatMessage(String messageText, String messageUser, Date messageTime) {
         this.messageText = messageText;
         this.messageUser = messageUser;
 
         // Initialize to current time
-        messageTime = new Date().getTime();
+        messageTime = new Date();
+
     }
 
     public ChatMessage(){
@@ -36,11 +39,13 @@ public class ChatMessage {
         this.messageUser = messageUser;
     }
 
-    public long getMessageTime() {
+    public Date getMessageTime() {
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        dateFormat.format(messageTime);
         return messageTime;
     }
 
-    public void setMessageTime(long messageTime) {
+    public void setMessageTime(Date messageTime) {
         this.messageTime = messageTime;
     }
 }
