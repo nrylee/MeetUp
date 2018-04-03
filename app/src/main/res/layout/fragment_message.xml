@@ -28,22 +28,21 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textName"
+            android:id="@+id/message_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="User Name"
-            android:textSize="12sp"
-             />
+            android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/textMessage"
+            android:id="@+id/message_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Message"
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/textTime"
+            android:id="@+id/message_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="TextView" />

@@ -6,4 +6,5 @@ public interface MessageItem {
     String getMessageText();
     String getMessageUser();
     Date getMessageTime();
+    String getMessageTimeString();
 }

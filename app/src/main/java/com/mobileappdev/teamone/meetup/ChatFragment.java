@@ -64,9 +64,9 @@ public class ChatFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
-        RecyclerView messageRecycler = v.findViewById(R.id.message_recycler);
+        /*RecyclerView messageRecycler = v.findViewById(R.id.message_recycler);
         messageRecycler.setAdapter(new MessageRecyclerViewAdapter(mListener));
-        messageRecycler.setLayoutManager(new LinearLayoutManager(messageRecycler.getContext(), LinearLayoutManager.VERTICAL, false));
+        messageRecycler.setLayoutManager(new LinearLayoutManager(messageRecycler.getContext(), LinearLayoutManager.VERTICAL, false));*/
         return v;
     }
 
@@ -91,7 +91,7 @@ public class ChatFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ((TextView)view.findViewById(R.id.textMessage)).setText("I am a fragment of chat with Id=" + this.mParam1);
+        ((TextView)view.findViewById(R.id.message_text)).setText("I am a fragment of chat with Id=" + this.mParam1);
     }
 
     @Override

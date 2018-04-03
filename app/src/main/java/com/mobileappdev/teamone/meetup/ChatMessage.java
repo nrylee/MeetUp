@@ -15,37 +15,28 @@ public class ChatMessage implements MessageItem {
         this.messageUser = messageUser;
 
         // Initialize to current time
-        messageTime = new Date();
-
-    }
-
-    public ChatMessage(){
+        this.messageTime = messageTime;
 
     }
 
     public String getMessageText() {
-        return messageText;
-    }
 
-    public void setMessageText(String messageText) {
-        this.messageText = messageText;
+        return this.messageText;
     }
 
     public String getMessageUser() {
-        return messageUser;
+
+        return this.messageUser;
     }
 
-    public void setMessageUser(String messageUser) {
-        this.messageUser = messageUser;
-    }
-
+    @Override
     public Date getMessageTime() {
+        return this.messageTime;
+    }
+
+    public String getMessageTimeString() {
         DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         dateFormat.format(messageTime);
-        return messageTime;
-    }
-
-    public void setMessageTime(Date messageTime) {
-        this.messageTime = messageTime;
+        return dateFormat.format(messageTime);
     }
 }

@@ -12,9 +12,9 @@ import java.util.List;
 public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecyclerViewAdapter.ViewHolder> {
 
     private final List<MessageItem> mValues;
-    private final ChatFragment.OnFragmentInteractionListener mListener;
+    private final MessageFragment.OnFragmentInteractionListener mListener;
 
-    public MessageRecyclerViewAdapter(ChatFragment.OnFragmentInteractionListener listener) {
+    public MessageRecyclerViewAdapter(MessageFragment.OnFragmentInteractionListener listener) {
         mValues = MessageContent.getItems();
         mListener = listener;
     }
@@ -29,9 +29,9 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mMessage.setText(mValues.get(position).getMessageText());
-        holder.mUser.setText(mValues.get(position).getMessageUser());
-        //holder.mDate.setText(mValues.get(position).getMessageTime());
+        holder.mMessage.setText(holder.mItem.getMessageText());
+        holder.mUser.setText(holder.mItem.getMessageUser());
+        holder.mDate.setText(holder.mItem.getMessageTimeString());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +61,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
-            mMessage = itemView.findViewById(R.id.textMessage);
+            mMessage = itemView.findViewById(R.id.message_text);
             mUser = itemView.findViewById(R.id.message_user);
             mDate = itemView.findViewById(R.id.message_time);
         }

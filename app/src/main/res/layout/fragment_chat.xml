@@ -9,21 +9,29 @@
 
     <!-- TODO: Update blank fragment layout -->
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/message_recycler"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </android.support.v7.widget.RecyclerView>
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="444dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/message_recycler">
 
         <EditText
             android:id="@+id/txtBoxMessageInput"
@@ -31,28 +39,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Type Message Here..."/>
-            <!--android:inputType="textMessage"-->
+            android:hint="@string/type_message_here"
+            android:inputType="text|textMultiLine|textLongMessage" />
+        <!--android:inputType="textMessage"-->
 
         <Button
-            android:id="@+id/btnFilterChatList"
+            android:id="@+id/btnSendMessage"
             android:layout_width="29dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="SEND" />
+            android:text="@string/send" />
     </LinearLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/message_recycler"
-        android:layout_width="368dp"
-        android:layout_height="428dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

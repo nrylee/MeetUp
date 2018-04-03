@@ -5,14 +5,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.mobileappdev.teamone.meetup.FragmentListeners.OnViewChatListener;
+
 import java.util.List;
 
 public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRecyclerViewAdapter.ViewHolder>{
 
     private final List<ChatListItem> mValues;
-    private final ChatListFragment.OnFragmentInteractionListener mListener;
+    private final OnViewChatListener mListener;
 
-    public ChatListRecyclerViewAdapter(ChatListFragment.OnFragmentInteractionListener listener) {
+    public ChatListRecyclerViewAdapter(OnViewChatListener listener) {
         mValues = ChatListContent.getItems();
         mListener = listener;
     }
@@ -38,7 +40,7 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onFragmentInteraction(holder.mItem);
+                    mListener.onViewChatInteraction(holder.mItem.getId());
                 }
             }
         });
