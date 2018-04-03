@@ -19,11 +19,13 @@ public class ChatMessage implements MessageItem {
 
     }
 
+    @Override
     public String getMessageText() {
 
         return this.messageText;
     }
 
+    @Override
     public String getMessageUser() {
 
         return this.messageUser;
@@ -34,6 +36,7 @@ public class ChatMessage implements MessageItem {
         return this.messageTime;
     }
 
+    @Override
     public String getMessageTimeString() {
         DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         dateFormat.format(messageTime);

@@ -28,7 +28,8 @@ public class MainActivity extends AppCompatActivity
         EventsListFragment.OnCreateEventFragmentInteractionListener,
         EventDetailFragment.OnEditEventInteractionListener,
         EditEventFragment.OnFragmentInteractionListener,
-        MessageFragment.OnFragmentInteractionListener
+        MessageFragment.OnFragmentInteractionListener,
+        NotificationFragment.OnListFragmentInteractionListener
 {
 
     private TextView mTextMessage;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity
     private FragmentTransaction fragmentTransaction;
     private EventsListFragment eventsListFragment;
     private ChatListFragment chatListFragment;
+    private NotificationFragment notificationFragment;
     private MapFragment mapFragment;
 
 
@@ -61,6 +63,9 @@ public class MainActivity extends AppCompatActivity
                     fragmentTransaction.commit();
                     return true;
                 case R.id.navigation_notifications:
+                    fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.fragmentWindow, notificationFragment);
+                    fragmentTransaction.commit();
                     return true;
             }
             return false;
@@ -74,6 +79,7 @@ public class MainActivity extends AppCompatActivity
         eventsListFragment = new EventsListFragment();
         mapFragment = new MapFragment();
         chatListFragment = new ChatListFragment();
+        notificationFragment = new NotificationFragment();
 
         fragmentManager = getSupportFragmentManager();
 
@@ -132,5 +138,10 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragmentWindow, messageFragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+
     }
 }
