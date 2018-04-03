@@ -1,5 +1,7 @@
 package com.mobileappdev.teamone.meetup.MapModels;
 
+import com.mobileappdev.teamone.meetup.DbRepository.Repository;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -44,6 +46,10 @@ public class MapContent {
             }
         }
 
+        Repository repo = new Repository();
+        for (MapEventAttendee a:repo.GetEventAttendees()) {
+            _list.get(0).addAttendee(a);
+        }
         return _list;
     }
 }
