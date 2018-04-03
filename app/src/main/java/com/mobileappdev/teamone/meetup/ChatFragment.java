@@ -5,8 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,19 +61,15 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_chat, container, false);
-        RecyclerView messageRecycler = v.findViewById(R.id.message_recycler);
-        messageRecycler.setAdapter(new MessageRecyclerViewAdapter(mListener));
-        messageRecycler.setLayoutManager(new LinearLayoutManager(messageRecycler.getContext(), LinearLayoutManager.VERTICAL, false));
-        return v;
+        return inflater.inflate(R.layout.fragment_chat, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    /*public void onButtonPressed(Uri uri) {
+    public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
-    }*/
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -91,7 +85,7 @@ public class ChatFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ((TextView)view.findViewById(R.id.textMessage)).setText("I am a fragment of chat with Id=" + this.mParam1);
+        ((TextView)view.findViewById(R.id.fragment_chat_text)).setText("I am a fragment of chat with Id=" + this.mParam1);
     }
 
     @Override
@@ -112,6 +106,6 @@ public class ChatFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(MessageItem item);
+        void onFragmentInteraction(Uri uri);
     }
 }
