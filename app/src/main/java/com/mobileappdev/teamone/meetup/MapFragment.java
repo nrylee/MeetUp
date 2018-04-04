@@ -2,6 +2,7 @@ package com.mobileappdev.teamone.meetup;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -60,6 +61,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private GoogleMap mMap;
+    private SharedPreferences userdata;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -110,6 +112,7 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        userdata = getContext().getSharedPreferences("userdata", Context.MODE_PRIVATE);
         this.initializeMap();
     }
 
@@ -138,11 +141,11 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     }
 
     private void initializeMap() {
-        if (mMap == null) {
-            SupportMapFragment mapFrag = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.google_map_fragment);
-            mapFrag.getMapAsync(this);
-        }
+        SupportMapFragment mapFrag = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.google_map_fragment);
+        mapFrag.getMapAsync(this);
+
     }
+
 
     private void populateMap(List<MapEventItem> eventItems) {
         if(mMap != null) {
@@ -217,7 +220,13 @@ public class MapFragment extends android.support.v4.app.Fragment implements OnMa
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        populateMap(MapContent.getMapEvents());
+        Integer user_id = userdata.getInt("user_id", -1);
+        if(user_id>-1) {
+            populateMap(MapContent.getMapEvents(user_id));
+        }
+        else {
+            populateMap(MapContent.getMapEvents());
+        }
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(

@@ -317,8 +317,8 @@ public class Repository {
         }
     }
 
-    public List<MapEventAttendee> GetEventAttendees() {
-        String sql = "SELECT `user_id`, `user_name`, `user_centerLatitude`, `user_centerLongitude` FROM `user`";
+    public List<MapEventAttendee> GetEventAttendees(Integer event_id) {
+        String sql = "SELECT `user_id`, `user_name`, `user_centerLatitude`, `user_centerLongitude` FROM `user` inner join `xrefEventAttendance_event_user` on `user_id`=`eventAttendance_user_id` inner join `event` on `event_id`=`eventAttendance_event_id` WHERE `event_id`=" + event_id;
         try {
             List<User> users = (new GetUserList().execute(sql).get());
             List<MapEventAttendee> attendees = new ArrayList<>();

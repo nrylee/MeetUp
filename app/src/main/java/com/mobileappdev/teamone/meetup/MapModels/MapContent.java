@@ -11,6 +11,29 @@ public class MapContent {
     public final static double LAT_START = 33.755420;
     public final static double LNG_START = -84.387090;
 
+    public static List<MapEventItem> getMapEvents(Integer user_id) {
+        Repository repository = new Repository();
+        List<MapEventItem> _list = new ArrayList<>();
+
+        List<Repository.Event> eventsForUser = repository.GetEventsForUser(user_id);
+        for(Repository.Event userEvent:eventsForUser) {
+            MapEventItem mapEventItem = new MapEventItem(
+                    userEvent.event_id,
+                    userEvent.event_name,
+                    userEvent.event_latitude,
+                    userEvent.event_longitude,
+                    userEvent.event_radius
+            );
+            for(MapEventAttendee attendee:repository.GetEventAttendees(userEvent.event_id)) {
+                mapEventItem.addAttendee(attendee);
+            }
+
+            _list.add(mapEventItem);
+        }
+
+        return _list;
+    }
+
     public static List<MapEventItem> getMapEvents() {
         ArrayList<MapEventItem> _list = new ArrayList<>();
 
@@ -46,10 +69,10 @@ public class MapContent {
             }
         }
 
-        Repository repo = new Repository();
+        /*Repository repo = new Repository();
         for (MapEventAttendee a:repo.GetEventAttendees()) {
             _list.get(0).addAttendee(a);
-        }
+        }*/
         return _list;
     }
 }
