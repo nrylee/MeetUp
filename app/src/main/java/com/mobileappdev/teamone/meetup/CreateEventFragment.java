@@ -6,16 +6,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.transition.Slide;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 
 /**
@@ -40,6 +44,8 @@ public class CreateEventFragment extends Fragment {
     private EditText createEventStartTime;
     private EditText createEventEndTime;
     private EditText createEventName;
+
+    private Spinner mySpinner;
 
     private OnEventCreatedFragmentInteractionListener mListener;
 
@@ -107,6 +113,8 @@ public class CreateEventFragment extends Fragment {
         float user_lat = userdata.getFloat("user_lat", 0);
         float user_lng = userdata.getFloat("user_lng", 0);
 
+        mySpinner = view.findViewById(R.id.create_event_attendees_spinner);
+        populateSpinner();
 
         createEventLocation = view.findViewById(R.id.create_event_location);
         createEventStartTime = view.findViewById(R.id.create_event_start_time);
@@ -120,12 +128,21 @@ public class CreateEventFragment extends Fragment {
                 SimpleDateFormat dtf = new SimpleDateFormat("MM/dd/yyyy HH:mm");
                 if (mListener != null) {
                     try {
+
+                        List<Integer> attendees_id_list = new ArrayList<>();
+                        for (AttendeeListSimpleSearch search : ((AdapterAttendeeSpinnerItem)mySpinner.getAdapter()).getListState())
+                            if(search.isSelected() && search.getTagId() > -1)
+                                attendees_id_list.add(search.getTagId());
+
+
                         mListener.onEventCreatedFragmentInteraction(
                                 String.valueOf(createEventName.getText()),
                                 dtf.parse(String.valueOf(createEventStartTime.getText())),
                                 dtf.parse(String.valueOf(createEventEndTime.getText())),
-                                String.valueOf(createEventLocation.getText())
+                                String.valueOf(createEventLocation.getText()),
+                                attendees_id_list
                         );
+
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -141,6 +158,60 @@ public class CreateEventFragment extends Fragment {
         mListener = null;
     }
 
+    private void populateSpinner() {
+        List<AttendeeListSimpleSearch> tagsNames = new ArrayList<>();
+
+
+
+        AttendeeListSimpleSearch tagSpecific=new AttendeeListSimpleSearch();
+        tagSpecific.setTagId(-3);
+        tagSpecific.setTagText(AdapterAttendeeSpinnerItem.oneSpace);
+        tagsNames.add(tagSpecific);
+
+        tagSpecific=new AttendeeListSimpleSearch();
+        tagSpecific.setTagId(-2);
+        tagSpecific.setTagText("select All Items");
+        tagsNames.add(tagSpecific);
+
+        tagSpecific=new AttendeeListSimpleSearch();
+        tagSpecific.setTagId(-1);
+        tagSpecific.setTagText("remove All Items");
+        tagsNames.add(tagSpecific);
+
+        tagSpecific=new AttendeeListSimpleSearch();
+        tagSpecific.setTagId(0);
+        tagSpecific.setTagText("Item 0");
+        tagsNames.add(tagSpecific);
+
+        tagSpecific=new AttendeeListSimpleSearch();
+        tagSpecific.setTagId(1);
+        tagSpecific.setTagText("Item 1");
+        tagsNames.add(tagSpecific);
+
+        tagSpecific=new AttendeeListSimpleSearch();
+        tagSpecific.setTagId(2);
+        tagSpecific.setTagText("Item 2");
+        tagsNames.add(tagSpecific);
+
+        tagSpecific=new AttendeeListSimpleSearch();
+        tagSpecific.setTagId(3);
+        tagSpecific.setTagText("Item 3");
+        tagsNames.add(tagSpecific);
+
+        tagSpecific=new AttendeeListSimpleSearch();
+        tagSpecific.setTagId(4);
+        tagSpecific.setTagText("Item 4");
+        tagsNames.add(tagSpecific);
+
+        tagSpecific=new AttendeeListSimpleSearch();
+        tagSpecific.setTagId(5);
+        tagSpecific.setTagText("Item 5");
+        tagsNames.add(tagSpecific);
+
+        final AdapterAttendeeSpinnerItem adapterTagSpinnerItem = new AdapterAttendeeSpinnerItem(getContext(), 0, tagsNames,mySpinner);
+        mySpinner.setAdapter(adapterTagSpinnerItem);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -153,6 +224,6 @@ public class CreateEventFragment extends Fragment {
      */
     public interface OnEventCreatedFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onEventCreatedFragmentInteraction(String name, Date startTime, Date endTime, String locationString);
+        void onEventCreatedFragmentInteraction(String name, Date startTime, Date endTime, String locationString, List<Integer> attendeeIds);
     }
 }

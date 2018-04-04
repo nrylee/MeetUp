@@ -23,6 +23,7 @@ import com.mobileappdev.teamone.meetup.FragmentListeners.OnViewChatListener;
 import com.mobileappdev.teamone.meetup.FragmentListeners.OnViewEventDetailListener;
 import com.mobileappdev.teamone.meetup.dummy.DummyContent;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onViewEventDetailInteraction(Integer eventId) {
-        EventDetailFragment eventDetailFragment = EventDetailFragment.newInstance(null, null);
+        EventDetailFragment eventDetailFragment = EventDetailFragment.newInstance(eventId, null);
 
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragmentWindow, eventDetailFragment);
@@ -173,14 +174,23 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onEventCreatedFragmentInteraction(String name, Date startTime, Date endTime, String locationString) {
+    public void onEventCreatedFragmentInteraction(String name, Date startTime, Date endTime, String locationString, List<Integer> attendeeIds) {
         String[] split = locationString.split(",");
         Double lat = Double.valueOf(split[0]);
         Double lng = Double.valueOf(split[1]);
 
-        List<Integer> event_id = (new Repository()).InsertEvent(name, lat, lng, startTime, endTime, 150);
-        if ( event_id != null && event_id.size() > 0 ) {
+        List<Integer> event_ids = (new Repository()).InsertEvent(name, lat, lng, startTime, endTime, 150);
+        if ( event_ids != null && event_ids.size() > 0 ) {
+            List<Integer> user_ids = new ArrayList<Integer>(attendeeIds);
 
+            SharedPreferences userdata = getSharedPreferences("userdata", MODE_PRIVATE);
+            int userId = userdata.getInt("user_id", -1);
+            if (userId != -1) {
+                user_ids.add(userId);
+                List<Integer> attendeeReferenceIds = (new Repository()).InsertUserInEvent(event_ids.get(0), user_ids);
+
+                onViewEventDetailInteraction(event_ids.get(0));
+            }
         }
     }
 }

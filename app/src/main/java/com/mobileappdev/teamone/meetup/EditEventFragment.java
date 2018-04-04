@@ -24,7 +24,7 @@ public class EditEventFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private Integer mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
@@ -42,10 +42,10 @@ public class EditEventFragment extends Fragment {
      * @return A new instance of fragment EditEventFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EditEventFragment newInstance(String param1, String param2) {
+    public static EditEventFragment newInstance(Integer param1, String param2) {
         EditEventFragment fragment = new EditEventFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putInt(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -55,7 +55,7 @@ public class EditEventFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam1 = getArguments().getInt(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }

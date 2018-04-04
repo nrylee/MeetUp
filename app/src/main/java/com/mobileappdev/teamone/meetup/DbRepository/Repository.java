@@ -11,9 +11,28 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class Repository {
-    private class Event {
-        private Integer event_id;
-        private String event_name;
+    public class Event {
+        public Integer event_id;
+        public String event_name;
+        public Date event_created;
+        public Date event_start;
+        public Date event_end;
+        public Double event_latitude;
+        public Double event_longitude;
+        public Integer event_radius;
+        public Boolean event_link_sharing;
+        public Boolean event_require_approval;
+        public List<EventUser> Attendees;
+        public Integer AttendeesCount;
+    }
+
+    private class User {
+        public Integer user_id;
+        public String user_name;
+    }
+
+    private class EventUser extends User {
+
     }
 
     private class NonResultQuery extends AsyncTask<String, Void, Boolean> {
@@ -107,6 +126,64 @@ public class Repository {
             }//end try
 
             return attendeeList;
+        }
+    }
+
+    private class GetEventList extends AsyncTask<String, Void, List<Event>> {
+
+        @Override
+        protected List<Event> doInBackground(String... strings) {
+            List<Event> eventList = new ArrayList<>();
+            Connection con = null;
+            Statement stmt = null;
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                con = DriverManager.getConnection(
+                        "jdbc:mysql://frankencluster.com:3306/mdevteam1",
+                        "mdevteam1user",
+                        "sjw.yq97b.H2n"
+                );
+
+                stmt = con.createStatement();
+                String sql = strings[0];
+                ResultSet rs = stmt.executeQuery(sql);
+                while (rs.next()) {
+                    Event event = new Event();
+                    event.event_id = rs.getInt(1);
+                    event.event_name = rs.getString(2);
+                    event.event_created = rs.getDate(3);
+                    event.event_start = rs.getDate(4);
+                    event.event_end = rs.getDate(5);
+                    event.event_latitude = rs.getDouble(6);
+                    event.event_longitude = rs.getDouble(7);
+                    event.event_radius = rs.getInt(8);
+                    event.event_link_sharing = rs.getBoolean(9);
+                    event.event_require_approval = rs.getBoolean(10);
+                    event.AttendeesCount = rs.getInt(11);
+                    eventList.add(event);
+                }
+                rs.close();
+                stmt.close();
+                con.close();
+            } catch(Exception e){
+                //Handle errors for Class.forName
+                e.printStackTrace();
+            }finally{
+                //finally block used to close resources
+                try{
+                    if(stmt!=null)
+                        stmt.close();
+                }catch(SQLException se2){
+                }// nothing we can do
+                try{
+                    if(con!=null)
+                        con.close();
+                }catch(SQLException se){
+                    se.printStackTrace();
+                }//end finally try
+            }//end try
+
+            return eventList;
         }
     }
 
@@ -212,5 +289,49 @@ public class Repository {
         `event_centerLongitude` double not null default 0.0,
         `event_radius` int not null default 0,
          */
+    }
+
+    public List<Integer> InsertUserInEvent(Integer event_id, List<Integer> user_id) {
+        String sql = "INSERT INTO `xrefEventAttendance_event_user` (`eventAttendance_event_id`,`eventAttendance_user_id`) VALUES ";
+        for (Integer userId:user_id) {
+            sql += "(" + event_id + "," + userId + "),";
+        }
+        sql = sql.substring(0, sql.length()-1);
+
+        try {
+            return (new InsertQuery()).execute(sql).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Event> GetEventsForUser(Integer user_id) {
+        String sql = "SELECT `event_id`, `event_name`, `event_dateCreated`, `event_startTime`, `event_endTime`, `event_centerLatitude`, `event_centerLongitude`, `event_radius`, `event_link_sharing`, `event_require_approval`, count(`eventAttendance_user_id`) FROM `event` inner join `xrefEventAttendance_event_user` on `event_id`=`eventAttendance_event_id` WHERE `event_id` IN (SELECT `event_id` FROM `event` inner join `xrefEventAttendance_event_user` on `event_id`=`eventAttendance_event_id` where `eventAttendance_user_id`=" + user_id +") GROUP BY `event_id`;";
+
+        try {
+            return (new GetEventList()).execute(sql).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Event GetEventById(Integer event_id) {
+        String sql = "SELECT `event_id`, `event_name`, `event_dateCreated`, `event_startTime`, `event_endTime`, `event_centerLatitude`, `event_centerLongitude`, `event_radius`, `event_link_sharing`, `event_require_approval`, count(`eventAttendance_user_id`) FROM `event` inner join `xrefEventAttendance_event_user` on `event_id`=`eventAttendance_event_id` WHERE `event_id`=" + event_id + " GROUP BY `event_id`;";
+        try {
+            List<Event> events = (new GetEventList()).execute(sql).get();
+            if(events.size()==1)
+                return events.get(0);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

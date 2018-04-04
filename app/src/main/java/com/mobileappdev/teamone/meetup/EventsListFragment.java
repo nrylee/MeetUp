@@ -1,6 +1,7 @@
 package com.mobileappdev.teamone.meetup;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mobileappdev.teamone.meetup.DbRepository.Repository;
+import com.mobileappdev.teamone.meetup.EventModels.EventListContent;
 import com.mobileappdev.teamone.meetup.EventModels.EventListItem;
 import com.mobileappdev.teamone.meetup.FragmentListeners.OnViewEventDetailListener;
 import com.mobileappdev.teamone.meetup.dummy.DummyContent;
@@ -67,8 +70,16 @@ public class EventsListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_eventslist_list, container, false);
 
+        SharedPreferences userdata = view.getContext().getSharedPreferences("userdata", Context.MODE_PRIVATE);
+        int user_id = userdata.getInt("user_id", -1);
+
         RecyclerView eventListRecycler = view.findViewById(R.id.eventListRecyclerView);
-        eventListRecycler.setAdapter(new MyEventsListRecyclerViewAdapter(mViewEventListener));
+        if(user_id==-1) {
+            eventListRecycler.setAdapter(new MyEventsListRecyclerViewAdapter(mViewEventListener));
+        }
+        else {
+            eventListRecycler.setAdapter(new MyEventsListRecyclerViewAdapter(EventListContent.getListForUser(user_id), mViewEventListener));
+        }
         eventListRecycler.setLayoutManager(
                 new LinearLayoutManager(
                         eventListRecycler.getContext(),

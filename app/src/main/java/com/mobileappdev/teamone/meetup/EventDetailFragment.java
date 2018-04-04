@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.mobileappdev.teamone.meetup.DbRepository.Repository;
+
+import java.text.SimpleDateFormat;
 import java.util.Random;
 import java.util.Date;
 
@@ -29,7 +32,7 @@ public class EventDetailFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private Integer mParam1;
     private String mParam2;
 
     private OnEditEventInteractionListener mListener;
@@ -47,10 +50,10 @@ public class EventDetailFragment extends Fragment {
      * @return A new instance of fragment EventDetailFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EventDetailFragment newInstance(String param1, String param2) {
+    public static EventDetailFragment newInstance(Integer param1, String param2) {
         EventDetailFragment fragment = new EventDetailFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putInt(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -60,7 +63,7 @@ public class EventDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam1 = getArguments().getInt(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
@@ -115,31 +118,36 @@ public class EventDetailFragment extends Fragment {
         void onEditEventInteractionListener(Integer id);
     }
 
-    public void populateEventDetailFragment(String name, Date start, Date end, Boolean linksharing, Boolean requireApproval, Integer numOfAttendees) {
+    public void populateEventDetailFragment() {
 
-        TextView nameOfEvent = (TextView) getView().findViewById(R.id.NameOfEvent);
-        nameOfEvent.setText("Location of Event: " + name);
+        if(mParam1 > -1) {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 
-        TextView startTime = (TextView) getView().findViewById(R.id.Start2);
-        startTime.setText("Start: " + start);
+            Repository.Event event = (new Repository()).GetEventById((mParam1));
 
-        TextView endTime = (TextView) getView().findViewById(R.id.End2);
-        endTime.setText("End: " + end);
+            TextView nameOfEvent = (TextView) getView().findViewById(R.id.NameOfEvent);
+            nameOfEvent.setText(event.event_name);
 
-        TextView linkShare = (TextView) getView().findViewById(R.id.LinkSharing2);
-        linkShare.setText("Link Sharing" + linksharing);
+            TextView startTime = (TextView) getView().findViewById(R.id.Start2);
+            startTime.setText(sdf.format(event.event_start));
 
-        TextView approval = (TextView) getView().findViewById(R.id.Approval2);
-        approval.setText("Require Approval: " + requireApproval);
+            TextView endTime = (TextView) getView().findViewById(R.id.End2);
+            endTime.setText(sdf.format(event.event_end));
 
-        TextView attendee = (TextView) getView().findViewById(R.id.Attendee2);
-        attendee.setText("Number of Attendee: " + numOfAttendees);
+            TextView linkShare = (TextView) getView().findViewById(R.id.LinkSharing2);
+            linkShare.setText(event.event_link_sharing?"Enabled":"Disabled");
 
+            TextView approval = (TextView) getView().findViewById(R.id.Approval2);
+            approval.setText(event.event_require_approval?"Enabled":"Disabled");
+
+            TextView attendee = (TextView) getView().findViewById(R.id.Attendee2);
+            attendee.setText(String.valueOf(event.AttendeesCount));
+        }
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //populateEventDetailFragment();
+        populateEventDetailFragment();
     }
 }

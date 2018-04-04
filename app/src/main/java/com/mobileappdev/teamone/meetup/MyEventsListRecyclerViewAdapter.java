@@ -1,5 +1,6 @@
 package com.mobileappdev.teamone.meetup;
 
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,11 @@ public class MyEventsListRecyclerViewAdapter extends RecyclerView.Adapter<MyEven
 
     public MyEventsListRecyclerViewAdapter(/*List<EventListItem> items, */OnViewEventDetailListener listener) {
         mValues = EventListContent.getList();
+        mListener = listener;
+    }
+
+    public MyEventsListRecyclerViewAdapter(List<EventListItem> items, OnViewEventDetailListener listener) {
+        mValues = items;
         mListener = listener;
     }
 
