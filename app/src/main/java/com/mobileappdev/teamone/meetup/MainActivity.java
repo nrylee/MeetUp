@@ -189,6 +189,10 @@ public class MainActivity extends AppCompatActivity
                 user_ids.add(userId);
                 List<Integer> attendeeReferenceIds = (new Repository()).InsertUserInEvent(event_ids.get(0), user_ids);
 
+                List<Integer> chat_ids = (new Repository()).InsertEventChat(event_ids.get(0));
+                if(chat_ids.size()==1) {
+                    List<Integer> chatUsersReferenceIds = (new Repository()).InsertUsersIntoChat(user_ids, chat_ids.get(0));
+                }
                 onViewEventDetailInteraction(event_ids.get(0));
             }
         }

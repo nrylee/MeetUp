@@ -26,9 +26,11 @@ public class Repository {
         public Integer AttendeesCount;
     }
 
-    private class User {
+    public class User {
         public Integer user_id;
         public String user_name;
+        public Double user_lat;
+        public Double user_lng;
     }
 
     private class EventUser extends User {
@@ -77,11 +79,11 @@ public class Repository {
         }
     }
 
-    private class GetMapAttendeesList extends AsyncTask<String, Void, List<MapEventAttendee>> {
+    private class GetUserList extends AsyncTask<String, Void, List<User>> {
 
         @Override
-        protected List<MapEventAttendee> doInBackground(String... strings) {
-            List<MapEventAttendee> attendeeList = new ArrayList<>();
+        protected List<User> doInBackground(String... strings) {
+            List<User> userList = new ArrayList<>();
             Connection con = null;
             Statement stmt = null;
             try {
@@ -93,16 +95,15 @@ public class Repository {
                 );
 
                 stmt = con.createStatement();
-                String sql = "SELECT `user_id`, `user_name`, `user_centerLatitude`, `user_centerLongitude` FROM `user`";
+                String sql = strings[0];
                 ResultSet rs = stmt.executeQuery(sql);
                 while (rs.next()) {
-                    MapEventAttendee attendee = new MapEventAttendee(
-                            rs.getInt(1),
-                            rs.getString(2),
-                            rs.getDouble(3),
-                            rs.getDouble(4)
-                    );
-                    attendeeList.add(attendee);
+                    User user = new User();
+                    user.user_id = rs.getInt(1);
+                    user.user_name = rs.getString(2);
+                    user.user_lat = rs.getDouble(3);
+                    user.user_lng = rs.getDouble(4);
+                    userList.add(user);
                 }
                 rs.close();
                 stmt.close();
@@ -125,7 +126,7 @@ public class Repository {
                 }//end finally try
             }//end try
 
-            return attendeeList;
+            return userList;
         }
     }
 
@@ -188,8 +189,32 @@ public class Repository {
     }
 
     public List<MapEventAttendee> GetEventAttendees() {
+        String sql = "SELECT `user_id`, `user_name`, `user_centerLatitude`, `user_centerLongitude` FROM `user`";
         try {
-            return new GetMapAttendeesList().execute().get();
+            List<User> users = (new GetUserList().execute(sql).get());
+            List<MapEventAttendee> attendees = new ArrayList<>();
+            for(User user:users) {
+                MapEventAttendee attendee = new MapEventAttendee(
+                    user.user_id,
+                    user.user_name,
+                    user.user_lat,
+                    user.user_lng
+                );
+                attendees.add(attendee);
+            }
+            return attendees;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<User> ListAllUsers() {
+        String sql = "SELECT `user_id`, `user_name`, `user_centerLatitude`, `user_centerLongitude` FROM `user`";
+        try {
+            return (new GetUserList().execute(sql).get());
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -327,6 +352,36 @@ public class Repository {
             List<Event> events = (new GetEventList()).execute(sql).get();
             if(events.size()==1)
                 return events.get(0);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Integer> InsertEventChat(Integer event_id) {
+        String sql = "INSERT INTO `chat` (`chat_event_id`) VALUES (" + event_id + ")";
+
+        try {
+            return (new InsertQuery().execute(sql).get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Integer> InsertUsersIntoChat(List<Integer> user_ids, Integer chat_id) {
+        String sql = "INSERT INTO `xrefChatUser_chat_user` (`chatuser_chat_id`, `chatuser_user_id`) VALUES ";
+        for (Integer user_id:user_ids) {
+            sql += "(" + chat_id + "," + user_id + "),";
+        }
+        sql = sql.substring(0,sql.length()-1);
+
+        try {
+            return (new InsertQuery().execute(sql).get());
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {

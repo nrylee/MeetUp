@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.mobileappdev.teamone.meetup.DbRepository.Repository;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.text.ParseException;
@@ -46,6 +48,8 @@ public class CreateEventFragment extends Fragment {
     private EditText createEventName;
 
     private Spinner mySpinner;
+
+    private SharedPreferences userdata;
 
     private OnEventCreatedFragmentInteractionListener mListener;
 
@@ -109,7 +113,7 @@ public class CreateEventFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        SharedPreferences userdata = getContext().getSharedPreferences("userdata", Context.MODE_PRIVATE);
+        userdata = getContext().getSharedPreferences("userdata", Context.MODE_PRIVATE);
         float user_lat = userdata.getFloat("user_lat", 0);
         float user_lng = userdata.getFloat("user_lng", 0);
 
@@ -161,8 +165,6 @@ public class CreateEventFragment extends Fragment {
     private void populateSpinner() {
         List<AttendeeListSimpleSearch> tagsNames = new ArrayList<>();
 
-
-
         AttendeeListSimpleSearch tagSpecific=new AttendeeListSimpleSearch();
         tagSpecific.setTagId(-3);
         tagSpecific.setTagText(AdapterAttendeeSpinnerItem.oneSpace);
@@ -178,35 +180,16 @@ public class CreateEventFragment extends Fragment {
         tagSpecific.setTagText("remove All Items");
         tagsNames.add(tagSpecific);
 
-        tagSpecific=new AttendeeListSimpleSearch();
-        tagSpecific.setTagId(0);
-        tagSpecific.setTagText("Item 0");
-        tagsNames.add(tagSpecific);
+        List<Repository.User> users = (new Repository()).ListAllUsers();
 
-        tagSpecific=new AttendeeListSimpleSearch();
-        tagSpecific.setTagId(1);
-        tagSpecific.setTagText("Item 1");
-        tagsNames.add(tagSpecific);
-
-        tagSpecific=new AttendeeListSimpleSearch();
-        tagSpecific.setTagId(2);
-        tagSpecific.setTagText("Item 2");
-        tagsNames.add(tagSpecific);
-
-        tagSpecific=new AttendeeListSimpleSearch();
-        tagSpecific.setTagId(3);
-        tagSpecific.setTagText("Item 3");
-        tagsNames.add(tagSpecific);
-
-        tagSpecific=new AttendeeListSimpleSearch();
-        tagSpecific.setTagId(4);
-        tagSpecific.setTagText("Item 4");
-        tagsNames.add(tagSpecific);
-
-        tagSpecific=new AttendeeListSimpleSearch();
-        tagSpecific.setTagId(5);
-        tagSpecific.setTagText("Item 5");
-        tagsNames.add(tagSpecific);
+        for(Repository.User user:users) {
+            if(userdata.getInt("user_id", -1) != user.user_id) {
+                AttendeeListSimpleSearch tag = new AttendeeListSimpleSearch();
+                tag.setTagId(user.user_id);
+                tag.setTagText(user.user_name);
+                tagsNames.add(tag);
+            }
+        }
 
         final AdapterAttendeeSpinnerItem adapterTagSpinnerItem = new AdapterAttendeeSpinnerItem(getContext(), 0, tagsNames,mySpinner);
         mySpinner.setAdapter(adapterTagSpinnerItem);
