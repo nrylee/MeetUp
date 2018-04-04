@@ -1,7 +1,9 @@
 package com.mobileappdev.teamone.meetup;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -14,10 +16,14 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.mobileappdev.teamone.meetup.DbRepository.Repository;
 import com.mobileappdev.teamone.meetup.FragmentListeners.OnViewChatListener;
 import com.mobileappdev.teamone.meetup.FragmentListeners.OnViewEventDetailListener;
 import com.mobileappdev.teamone.meetup.dummy.DummyContent;
+
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
         implements
@@ -29,7 +35,8 @@ public class MainActivity extends AppCompatActivity
         EventDetailFragment.OnEditEventInteractionListener,
         EditEventFragment.OnFragmentInteractionListener,
         MessageFragment.OnFragmentInteractionListener,
-        NotificationFragment.OnListFragmentInteractionListener
+        NotificationFragment.OnListFragmentInteractionListener,
+        CreateEventFragment.OnEventCreatedFragmentInteractionListener
 {
 
     private TextView mTextMessage;
@@ -76,6 +83,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        LocationSync.startActionSyncLocation(this, null, null);
+
         eventsListFragment = new EventsListFragment();
         mapFragment = new MapFragment();
         chatListFragment = new ChatListFragment();
@@ -92,6 +101,23 @@ public class MainActivity extends AppCompatActivity
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences defaultSharedPreferences = getSharedPreferences("userdata", MODE_PRIVATE);
+        int user_id = defaultSharedPreferences.getInt("user_id", -1);
+        if (user_id == -1) {
+            //TODO: Implement Login Activity
+            user_id = 1;
+            defaultSharedPreferences.edit().putInt("user_id", user_id).apply();
+
+            int user_id1 = defaultSharedPreferences.getInt("user_id", -2);
+            if (user_id1 == -2) {
+                int length = "".length();
+            }
+        }
     }
 
     @Override
@@ -143,5 +169,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
 
+    }
+
+    @Override
+    public void onEventCreatedFragmentInteraction(String name, Date startTime, Date endTime, String locationString) {
+        String[] split = locationString.split(",");
+        Double lat = Double.valueOf(split[0]);
+        Double lng = Double.valueOf(split[1]);
+
+        Boolean event_id = (new Repository()).InsertEvent(name, lat, lng, startTime, endTime, 150);
+        if ( event_id != null ) {
+
+        }
     }
 }

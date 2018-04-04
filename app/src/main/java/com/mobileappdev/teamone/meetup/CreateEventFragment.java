@@ -1,18 +1,27 @@
 package com.mobileappdev.teamone.meetup;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link CreateEventFragment.OnFragmentInteractionListener} interface
+ * {@link CreateEventFragment.OnEventCreatedFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link CreateEventFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -27,7 +36,12 @@ public class CreateEventFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    private EditText createEventLocation;
+    private EditText createEventStartTime;
+    private EditText createEventEndTime;
+    private EditText createEventName;
+
+    private OnEventCreatedFragmentInteractionListener mListener;
 
     public CreateEventFragment() {
         // Required empty public constructor
@@ -70,19 +84,55 @@ public class CreateEventFragment extends Fragment {
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnEventCreatedFragmentInteractionListener) {
+            mListener = (OnEventCreatedFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        SharedPreferences userdata = getContext().getSharedPreferences("userdata", Context.MODE_PRIVATE);
+        float user_lat = userdata.getFloat("user_lat", 0);
+        float user_lng = userdata.getFloat("user_lng", 0);
+
+
+        createEventLocation = view.findViewById(R.id.create_event_location);
+        createEventStartTime = view.findViewById(R.id.create_event_start_time);
+        createEventEndTime = view.findViewById(R.id.create_event_end_time);
+        createEventName = view.findViewById(R.id.create_event_name);
+
+        createEventLocation.setText(user_lat + "," + user_lng);
+        ((Button)view.findViewById(R.id.create_event_button)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SimpleDateFormat dtf = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+                if (mListener != null) {
+                    try {
+                        mListener.onEventCreatedFragmentInteraction(
+                                String.valueOf(createEventName.getText()),
+                                dtf.parse(String.valueOf(createEventStartTime.getText())),
+                                dtf.parse(String.valueOf(createEventEndTime.getText())),
+                                String.valueOf(createEventLocation.getText())
+                        );
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
     }
 
     @Override
@@ -101,8 +151,8 @@ public class CreateEventFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnEventCreatedFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onEventCreatedFragmentInteraction(String name, Date startTime, Date endTime, String locationString);
     }
 }
