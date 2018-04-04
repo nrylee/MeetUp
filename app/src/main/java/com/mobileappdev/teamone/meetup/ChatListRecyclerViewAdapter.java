@@ -19,6 +19,11 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
         mListener = listener;
     }
 
+    public ChatListRecyclerViewAdapter(List<ChatListItem> items, OnViewChatListener listener) {
+        mValues = items;
+        mListener = listener;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = android.view.LayoutInflater.from(parent.getContext())

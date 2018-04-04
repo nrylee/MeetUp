@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity
         EventsListFragment.OnCreateEventFragmentInteractionListener,
         EventDetailFragment.OnEditEventInteractionListener,
         EditEventFragment.OnFragmentInteractionListener,
-        MessageFragment.OnFragmentInteractionListener,
+        MessageFragment.OnSendMessageListener,
         NotificationFragment.OnListFragmentInteractionListener,
         CreateEventFragment.OnEventCreatedFragmentInteractionListener
 {
@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity
     private ChatListFragment chatListFragment;
     private NotificationFragment notificationFragment;
     private MapFragment mapFragment;
+    private SharedPreferences userdata;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -87,6 +88,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         LocationSync.startActionSyncLocation(this, null, null);
 
+        userdata = getSharedPreferences("userdata", MODE_PRIVATE);
+
         eventsListFragment = new EventsListFragment();
         mapFragment = new MapFragment();
         chatListFragment = new ChatListFragment();
@@ -108,14 +111,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        SharedPreferences defaultSharedPreferences = getSharedPreferences("userdata", MODE_PRIVATE);
-        int user_id = defaultSharedPreferences.getInt("user_id", -1);
+        userdata = getSharedPreferences("userdata", MODE_PRIVATE);
+        int user_id = userdata.getInt("user_id", -1);
         if (user_id == -1) {
             //TODO: Implement Login Activity
             user_id = 1;
-            defaultSharedPreferences.edit().putInt("user_id", user_id).apply();
+            userdata.edit().putInt("user_id", user_id).apply();
 
-            int user_id1 = defaultSharedPreferences.getInt("user_id", -2);
+            int user_id1 = userdata.getInt("user_id", -2);
             if (user_id1 == -2) {
                 int length = "".length();
             }
@@ -161,7 +164,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onViewChatInteraction(Integer chatId) {
-        MessageFragment messageFragment = MessageFragment.newInstance(null, null);
+        MessageFragment messageFragment = MessageFragment.newInstance(chatId, null);
 
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragmentWindow, messageFragment);
@@ -195,6 +198,15 @@ public class MainActivity extends AppCompatActivity
                 }
                 onViewEventDetailInteraction(event_ids.get(0));
             }
+        }
+    }
+
+    @Override
+    public void onSendMessageInteraction(String message, Integer chat_id) {
+        int user_id = userdata.getInt("user_id", -1);
+        if (user_id>-1) {
+            Boolean messageSent = (new Repository()).InsertChatMessage(message, user_id, chat_id);
+            if(messageSent) onViewChatInteraction(chat_id);
         }
     }
 }

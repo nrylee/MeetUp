@@ -9,12 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MessageFragment.OnFragmentInteractionListener} interface
+ * {@link MessageFragment.OnSendMessageListener} interface
  * to handle interaction events.
  * Use the {@link MessageFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -26,10 +27,11 @@ public class MessageFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private Integer mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    private OnSendMessageListener mListener;
+    private EditText inputTextView;
 
     public MessageFragment() {
         // Required empty public constructor
@@ -44,10 +46,10 @@ public class MessageFragment extends Fragment {
      * @return A new instance of fragment MessageFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MessageFragment newInstance(String param1, String param2) {
+    public static MessageFragment newInstance(Integer param1, String param2) {
         MessageFragment fragment = new MessageFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putInt(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -57,7 +59,7 @@ public class MessageFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam1 = getArguments().getInt(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -69,8 +71,23 @@ public class MessageFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
 
         RecyclerView messageRecycler =  v.findViewById(R.id.message_recycler);
-        messageRecycler.setAdapter(new MessageRecyclerViewAdapter(mListener));
+        if(mParam1==null){
+            messageRecycler.setAdapter(new MessageRecyclerViewAdapter(mListener));
+        }
+        else {
+            messageRecycler.setAdapter(new MessageRecyclerViewAdapter(MessageContent.getItems(mParam1), mListener));
+        }
+
         messageRecycler.setLayoutManager(new LinearLayoutManager(messageRecycler.getContext(), LinearLayoutManager.VERTICAL, false));
+        inputTextView = v.findViewById(R.id.txtBoxMessageInput);
+        v.findViewById(R.id.btnSendMessage).setOnClickListener(
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mListener.onSendMessageInteraction(String.valueOf(inputTextView.getText()), mParam1);
+                }
+            }
+        );
 
         return v;
     }
@@ -78,8 +95,8 @@ public class MessageFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnSendMessageListener) {
+            mListener = (OnSendMessageListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -102,8 +119,8 @@ public class MessageFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnSendMessageListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(MessageItem messageItem);
+        void onSendMessageInteraction(String message, Integer chat_id);
     }
 }

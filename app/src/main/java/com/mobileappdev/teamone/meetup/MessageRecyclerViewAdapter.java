@@ -12,10 +12,15 @@ import java.util.List;
 public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecyclerViewAdapter.ViewHolder> {
 
     private final List<MessageItem> mValues;
-    private final MessageFragment.OnFragmentInteractionListener mListener;
+    private final MessageFragment.OnSendMessageListener mListener;
 
-    public MessageRecyclerViewAdapter(MessageFragment.OnFragmentInteractionListener listener) {
+    public MessageRecyclerViewAdapter(MessageFragment.OnSendMessageListener listener) {
         mValues = MessageContent.getItems();
+        mListener = listener;
+    }
+
+    public MessageRecyclerViewAdapter(List<MessageItem> items, MessageFragment.OnSendMessageListener listener) {
+        mValues = items;
         mListener = listener;
     }
 
@@ -33,16 +38,16 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
         holder.mUser.setText(holder.mItem.getMessageUser());
         holder.mDate.setText(holder.mItem.getMessageTimeString());
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+        /*holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onFragmentInteraction(holder.mItem);
+                    mListener.onSendMessageInteraction(holder.mItem);
                 }
             }
-        });
+        });*/
     }
 
     @Override

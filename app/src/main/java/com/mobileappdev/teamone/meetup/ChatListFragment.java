@@ -1,6 +1,7 @@
 package com.mobileappdev.teamone.meetup;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -29,10 +30,11 @@ public class ChatListFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private Integer mParam1;
     private String mParam2;
 
     private OnViewChatListener mListener;
+    private SharedPreferences userdata;
 
     public ChatListFragment() {
         // Required empty public constructor
@@ -47,10 +49,10 @@ public class ChatListFragment extends Fragment {
      * @return A new instance of fragment ChatListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ChatListFragment newInstance(String param1, String param2) {
+    public static ChatListFragment newInstance(Integer param1, String param2) {
         ChatListFragment fragment = new ChatListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putInt(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -60,7 +62,7 @@ public class ChatListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam1 = getArguments().getInt(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -71,7 +73,14 @@ public class ChatListFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_chat_list, container, false);
         RecyclerView chatListRecycler =  v.findViewById(R.id.chat_list_recycler);
-        chatListRecycler.setAdapter(new ChatListRecyclerViewAdapter(mListener));
+        userdata = v.getContext().getSharedPreferences("userdata", Context.MODE_PRIVATE);
+        Integer user_id = userdata.getInt("user_id", -1);
+        if(user_id > -1) {
+            chatListRecycler.setAdapter(new ChatListRecyclerViewAdapter(ChatListContent.getItemsForUser(user_id), mListener));
+        }
+        else {
+            chatListRecycler.setAdapter(new ChatListRecyclerViewAdapter(mListener));
+        }
         chatListRecycler.setLayoutManager(new LinearLayoutManager(chatListRecycler.getContext(), LinearLayoutManager.VERTICAL, false));
         return v;
     }

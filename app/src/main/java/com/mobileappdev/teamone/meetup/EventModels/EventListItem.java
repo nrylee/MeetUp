@@ -28,7 +28,7 @@ public class EventListItem {
 
 
     public String getAttendee() {
-        return attendees + "Attendees";
+        return attendees + " Attendees";
     }
 
 
