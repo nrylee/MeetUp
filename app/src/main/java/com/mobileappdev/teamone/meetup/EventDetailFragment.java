@@ -3,12 +3,15 @@ package com.mobileappdev.teamone.meetup;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.Random;
+import java.util.Date;
 
 
 /**
@@ -77,7 +80,6 @@ public class EventDetailFragment extends Fragment {
                 }
             }
         );
-
         return view;
     }
 
@@ -111,5 +113,33 @@ public class EventDetailFragment extends Fragment {
     public interface OnEditEventInteractionListener {
         // TODO: Update argument type and name
         void onEditEventInteractionListener(Integer id);
+    }
+
+    public void populateEventDetailFragment(String name, Date start, Date end, Boolean linksharing, Boolean requireApproval, Integer numOfAttendees) {
+
+        TextView nameOfEvent = (TextView) getView().findViewById(R.id.NameOfEvent);
+        nameOfEvent.setText("Location of Event: " + name);
+
+        TextView startTime = (TextView) getView().findViewById(R.id.Start2);
+        startTime.setText("Start: " + start);
+
+        TextView endTime = (TextView) getView().findViewById(R.id.End2);
+        endTime.setText("End: " + end);
+
+        TextView linkShare = (TextView) getView().findViewById(R.id.LinkSharing2);
+        linkShare.setText("Link Sharing" + linksharing);
+
+        TextView approval = (TextView) getView().findViewById(R.id.Approval2);
+        approval.setText("Require Approval: " + requireApproval);
+
+        TextView attendee = (TextView) getView().findViewById(R.id.Attendee2);
+        attendee.setText("Number of Attendee: " + numOfAttendees);
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //populateEventDetailFragment();
     }
 }
