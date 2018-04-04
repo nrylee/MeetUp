@@ -3,6 +3,7 @@ package com.mobileappdev.teamone.meetup.EventModels;
 import com.mobileappdev.teamone.meetup.DbRepository.Repository;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class EventListContent {
@@ -13,7 +14,10 @@ public class EventListContent {
         for(int i = 0; i < 15; i++) {
             EventListItem eventListItem = new EventListItem(
                     i,
-                    "Event " + i + " Name"
+                    "Event " + i + " Name",
+                    5,
+                    Math.random() * 10000,
+                    new Date()
             );
 
 
@@ -30,8 +34,11 @@ public class EventListContent {
 
         for (Repository.Event event:eventList) {
             EventListItem eventListItem = new EventListItem(
-                event.event_id,
-                event.event_name
+                    event.event_id,
+                    event.event_name,
+                    event.AttendeesCount,
+                    event.event_longitude,
+                    event.event_start
             );
             _list.add(eventListItem);
         }

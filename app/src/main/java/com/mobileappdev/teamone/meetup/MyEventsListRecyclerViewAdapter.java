@@ -47,6 +47,9 @@ public class MyEventsListRecyclerViewAdapter extends RecyclerView.Adapter<MyEven
         holder.mItem = mValues.get(position);
         //holder.mIdView.setText(mValues.get(position).id);
         holder.mEventNameView.setText(mValues.get(position).getEventName());
+        holder.mAttendees.setText(mValues.get(position).getAttendee());
+        holder.mStatus.setText(mValues.get(position).getStatus());
+        holder.mSubStatus.setText(mValues.get(position).getSubStatus());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +72,9 @@ public class MyEventsListRecyclerViewAdapter extends RecyclerView.Adapter<MyEven
         public final View mView;
         //public final TextView mIdView;
         public final TextView mEventNameView;
+        public final TextView mAttendees;
+        public final TextView mStatus;
+        public final TextView mSubStatus;
         public EventListItem mItem;
 
         public ViewHolder(View view) {
@@ -76,6 +82,9 @@ public class MyEventsListRecyclerViewAdapter extends RecyclerView.Adapter<MyEven
             mView = view;
             //mIdView = (TextView) view.findViewById(R.id.id);
             mEventNameView = (TextView) view.findViewById(R.id.text_view_event_name);
+            mAttendees = (TextView) view.findViewById(R.id.textSubTitle);
+            mStatus = (TextView) view.findViewById(R.id.textStartTime);
+            mSubStatus = (TextView) view.findViewById(R.id.textDistance);
         }
 
         @Override
