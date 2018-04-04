@@ -11,14 +11,10 @@
     android:paddingTop="6dp">
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/image_view_chat_display"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="Icon of chat."
         app:srcCompat="@mipmap/ic_launcher_round" />
 
     <LinearLayout
@@ -33,6 +29,7 @@
             android:layout_height="wrap_content"
             android:text="Event Name"
             android:textSize="18sp"
+            android:textColor="@color/colorBlack"
             android:textStyle="bold" />
 
         <TextView
@@ -40,6 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Attendees"
+            android:textColor="@color/colorBlack"
             android:textSize="12sp" />
     </LinearLayout>
 
@@ -52,18 +50,18 @@
 
         <TextView
             android:id="@+id/textTopRight"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
-            android:textAlignment="viewEnd"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:layout_gravity="right"/>
 
         <TextView
             android:id="@+id/textBottomRight"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
-            android:textAlignment="viewEnd"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:layout_gravity="right"/>
     </LinearLayout>
 </LinearLayout>

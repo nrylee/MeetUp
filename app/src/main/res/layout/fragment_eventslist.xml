@@ -36,6 +36,7 @@
                 android:layout_weight="1"
                 android:id="@+id/text_view_event_name"
                 android:maxLines="1"
+                android:textSize="18sp"
                 android:textColor="@color/colorBlack"
                 android:textStyle="bold"/>
             <TextView
