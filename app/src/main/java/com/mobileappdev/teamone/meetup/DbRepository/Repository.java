@@ -133,11 +133,11 @@ public class Repository {
         return false;
     }
 
-    private class InsertQuery extends AsyncTask<String, Void, Integer> {
+    private class InsertQuery extends AsyncTask<String, Void, List<Integer>> {
 
         @Override
-        protected Integer doInBackground(String... strings) {
-            Integer id = null;
+        protected List<Integer> doInBackground(String... strings) {
+            List<Integer> ids = new ArrayList<>();
             Connection con = null;
             Statement stmt = null;
             try {
@@ -150,7 +150,17 @@ public class Repository {
 
                 stmt = con.createStatement();
                 String sql = strings[0];
-                id = stmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+                stmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+                int autoIncKeyFromApi = -1;
+
+                ResultSet rs = stmt.getGeneratedKeys();
+
+                while(rs.next()) {
+                    ids.add(rs.getInt(1));
+                }
+
+                rs.close();
+                rs = null;
                 stmt.close();
                 con.close();
             } catch(Exception e){
@@ -171,11 +181,11 @@ public class Repository {
                 }//end finally try
             }//end try
 
-            return id;
+            return ids;
         }
     }
 
-    public Boolean InsertEvent(String name, double lat, double lng, java.util.Date start, java.util.Date end, Integer radius) {
+    public List<Integer> InsertEvent(String name, double lat, double lng, java.util.Date start, java.util.Date end, Integer radius) {
         java.text.SimpleDateFormat sdf =
                 new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String sql = "INSERT INTO `event` " +
@@ -185,7 +195,7 @@ public class Repository {
 
 
         try {
-            return (new NonResultQuery()).execute(sql).get();
+            return (new InsertQuery()).execute(sql).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {

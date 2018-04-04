@@ -24,6 +24,7 @@ import com.mobileappdev.teamone.meetup.FragmentListeners.OnViewEventDetailListen
 import com.mobileappdev.teamone.meetup.dummy.DummyContent;
 
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements
@@ -177,8 +178,8 @@ public class MainActivity extends AppCompatActivity
         Double lat = Double.valueOf(split[0]);
         Double lng = Double.valueOf(split[1]);
 
-        Boolean event_id = (new Repository()).InsertEvent(name, lat, lng, startTime, endTime, 150);
-        if ( event_id != null ) {
+        List<Integer> event_id = (new Repository()).InsertEvent(name, lat, lng, startTime, endTime, 150);
+        if ( event_id != null && event_id.size() > 0 ) {
 
         }
     }
